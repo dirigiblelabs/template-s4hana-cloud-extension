@@ -1,0 +1,67 @@
+var rs = require("http/v4/rs");
+var httpClient = require("http/v4/client");
+var destinationService = require("cloud-foundry/services/destination");
+
+rs.service()
+.resource("")
+	.get(function(ctx, request, response) {
+		let destination = destinationService.getDestination("${destinationName}");
+		let url = destination.destinationConfiguration.URL + "/${dataName}";
+		let authToken = destination.authTokens[0].value;
+		let clientResponse = httpClient.get(url, {
+			params: [{
+				name: "$format",
+				value: "json"
+			}],
+			headers: [{
+				name: "Authorization",
+				value: "Basic " + authToken
+			}, {
+				name: "X-CSRF-Token",
+				value: "fetch"
+			}]
+		});
+		let data = JSON.parse(clientResponse.text);
+		response.setContentType("application/json");
+		response.println(JSON.stringify(data.d.results));
+	})
+	.post(function(ctx, request, response) {
+		let destination = destinationService.getDestination("${destinationName}");
+		let url = destination.destinationConfiguration.URL;
+		let authToken = destination.authTokens[0].value;
+		let entity = request.getJSON();
+
+		let csrfTokenResponse = httpClient.get(url + "/$metadata", {
+			headers: [{
+				name: "Authorization",
+				value: "Basic " + authToken
+			}, {
+				name: "X-CSRF-Token",
+				value: "fetch"
+			}]
+		});
+		let csrfToken = csrfTokenResponse.headers.filter(e => e.name === "x-csrf-token")[0].value;
+		let setCookies = csrfTokenResponse.headers.filter(e => e.name === "set-cookie");
+
+		let clientResponse = httpClient.post(url + "/${dataName}", {
+			text: JSON.stringify(entity),
+			headers: [{
+				name: "Authorization",
+				value: "Basic " + authToken
+			}, {
+				name: "Content-Type",
+				value: "application/json"
+			}, {
+				name: "Accept",
+				value: "application/json"
+			}, {
+				name: "X-CSRF-Token",
+				value: csrfToken
+			}, {
+				name: "Cookie",
+				value: setCookies.map(e => e.value).join(";")
+			}]
+		});
+		response.println(clientResponse.text);
+	})
+.execute();

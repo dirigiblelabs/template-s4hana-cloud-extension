@@ -1,0 +1,120 @@
+sap.ui.define([
+	"sap/ui/core/mvc/Controller",
+	"${projectName}/util/Config",
+	"sap/m/MessageBox",
+	"sap/m/MessageToast",
+	"sap/ui/model/json/JSONModel"
+], function (Controller, Config, MessageBox, MessageToast, JSONModel) {
+	"use strict";
+
+	return Controller.extend("${projectName}.controller.App", {
+
+		onBeforeRendering: function () {},
+
+		onInit: function () {
+			this._getData();
+		},
+
+		showDetails: function (evt) {
+			var listItem = evt.getSource();
+			var bindingContext = listItem.getBindingContext("${dataName}");
+
+			var detailsView = this.byId('detailsView');
+
+			detailsView.getModel("details").setData({
+				incidentTitle: bindingContext.getProperty("IncidentTitle"),
+				incidentCategory: bindingContext.getProperty("IncidentCategory"),
+				incidentSeverity: bindingContext.getProperty("YY1_CUSTSEVERITY_IRN"),
+				IncidentUTCDateTime: bindingContext.getProperty("IncidentUTCDateTime")
+			});
+
+			detailsView.byId('detailsPopover').openBy(evt.getSource());
+		},
+
+		onPressCreateEntity: function (oEvent) {
+			var oCreateEntityDialog = this._getCreateEntityDialog();
+			oCreateEntityDialog.open();
+		},
+
+		onPressCancelCreateEntityDialog: function (oEvent) {
+			var oCreateEntityDialog = this._getCreateEntityDialog();
+			oCreateEntityDialog.close();
+		},
+
+		onPressCreateEntityDialog: function (oEvent) {
+			var oCreateEntityDialog = this._getCreateEntityDialog();
+
+           sap.ui.core.BusyIndicator.show(0);
+           
+			jQuery.ajax({
+				type: "POST",
+				contentType: "application/json",
+				url: Config.serviceUrl + "/${dataName}",
+				data: JSON.stringify({
+#foreach ($property in $properties)
+					${property.widgetService}: sap.ui.getCore().getElementById("${property.name}Input").getValue()#if($foreach.hasNext),
+#end
+#end
+
+				}),
+				timeout: 100000,
+				success: function (id) {
+					oCreateEntityDialog.close();
+				    MessageToast.show("${name} Successfully Created");
+			    	sap.ui.core.BusyIndicator.hide();
+				},
+				error: function (e) {
+					oCreateEntityDialog.close();
+					MessageToast.show(e.responseText);
+			    	sap.ui.core.BusyIndicator.hide();
+				},
+				done: function (e) {
+					sap.ui.core.BusyIndicator.hide();
+				}
+			});
+		},
+		
+		onPressRefresh : function () {
+			this._getData();
+		},
+		
+		_getData : function () {
+		    sap.ui.core.BusyIndicator.show(0);
+			jQuery.ajax({
+				method: "GET",
+				url: Config.serviceUrl + "/${dataName}",
+				context: this
+			}).done(this._setRequestsModel)
+			.fail(this._showError);
+		},
+		
+		_setRequestsModel : function(newRequests) {
+			this.getView().setModel(new JSONModel({
+				data: newRequests
+			}), "${dataName}");
+			sap.ui.core.BusyIndicator.hide();
+	    },
+	    
+        _showError : function (jqXHR, textStatus, errorThrown) {
+			MessageBox.error(jqXHR.responseText);
+		},
+		
+		_getCreateEntityDialog: function () {
+			var oView = this.getView();
+			if (!this.oCreateEntityDialog) {
+				this.oCreateEntityDialog = sap.ui.xmlfragment("${projectName}.fragments.CreateEntity", this);
+				oView.addDependent(this.oCreateEntityDialog);
+				// initialize fragment model
+				var oFragmentModel = new JSONModel({
+					IncidentTitle: "",
+					IncidentCategory: "",
+					IncidentSeverity: "",
+					IncidentUTCDateTime: ""
+				});
+				this.oCreateEntityDialog.setModel(oFragmentModel, "fragmentModel");
+			}
+			return this.oCreateEntityDialog;
+		}
+	});
+
+});

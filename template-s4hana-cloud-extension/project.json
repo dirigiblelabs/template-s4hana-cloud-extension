@@ -1,0 +1,14 @@
+{
+	"guid": "template-s4-extension",
+	"repository": {
+		"type": "git",
+		"branch": "master",
+		"url": "https://github.com/dirigiblelabs/template-s4hana-cloud-extension.git"
+	},
+	"dependencies": [{
+		"guid": "client-cloud-foundry",
+		"type": "git",
+		"url": "https://github.com/dirigiblelabs/client-cloud-foundry.git",
+		"branch": "master"
+	}]
+}
