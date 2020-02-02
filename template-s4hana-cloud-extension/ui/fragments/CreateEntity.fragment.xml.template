@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core">
-	<Dialog id="CreateIncidentDialog" title="Create Incident" verticalScrolling="true">
+	<Dialog id="CreateDialog" title="Create ${name}" verticalScrolling="true">
 		<content>
 #foreach ($property in $properties)
 			<Label text="${property.name}" labelFor="${property.name}Input"/>

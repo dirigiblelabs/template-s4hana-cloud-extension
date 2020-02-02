@@ -15,6 +15,9 @@
 					  	</content>
 					 </OverflowToolbar>
 					</headerToolbar>
+					<dependents>
+						<mvc:XMLView id="detailsView" viewName="${projectName}.view.Details" />
+					</dependents>
 					<columns>
 						<Column />
 						<Column hAlign="Right" />

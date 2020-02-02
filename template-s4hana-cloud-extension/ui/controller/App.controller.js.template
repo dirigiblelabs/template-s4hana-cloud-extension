@@ -22,10 +22,11 @@ sap.ui.define([
 			var detailsView = this.byId('detailsView');
 
 			detailsView.getModel("details").setData({
-				incidentTitle: bindingContext.getProperty("IncidentTitle"),
-				incidentCategory: bindingContext.getProperty("IncidentCategory"),
-				incidentSeverity: bindingContext.getProperty("YY1_CUSTSEVERITY_IRN"),
-				IncidentUTCDateTime: bindingContext.getProperty("IncidentUTCDateTime")
+#foreach ($property in $properties)
+				${property.name}: bindingContext.getProperty("${property.widgetService}")#if($foreach.hasNext),
+#end
+#end
+
 			});
 
 			detailsView.byId('detailsPopover').openBy(evt.getSource());
@@ -105,13 +106,7 @@ sap.ui.define([
 				this.oCreateEntityDialog = sap.ui.xmlfragment("${projectName}.fragments.CreateEntity", this);
 				oView.addDependent(this.oCreateEntityDialog);
 				// initialize fragment model
-				var oFragmentModel = new JSONModel({
-					IncidentTitle: "",
-					IncidentCategory: "",
-					IncidentSeverity: "",
-					IncidentUTCDateTime: ""
-				});
-				this.oCreateEntityDialog.setModel(oFragmentModel, "fragmentModel");
+				this.oCreateEntityDialog.setModel(new JSONModel(), "fragmentModel");
 			}
 			return this.oCreateEntityDialog;
 		}

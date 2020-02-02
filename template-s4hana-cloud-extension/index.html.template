@@ -4,7 +4,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta charset="UTF-8">
 	
-		<title>Manage Incidents</title>
+		<title>Manage Entities</title>
 	
 		<script id='sap-ui-bootstrap' type='text/javascript'
 			src='https://openui5.hana.ondemand.com/1.66.1/resources/sap-ui-core.js'

@@ -1,0 +1,13 @@
+<!DOCTYPE xml>
+<mvc:View xmlns='sap.m' xmlns:mvc="sap.ui.core.mvc" controllerName="${projectName}.controller.Details">
+	<ResponsivePopover id="detailsPopover" placement="Bottom" title="${name} Details">
+		<VBox class="sapUiSmallMargin">
+#foreach ($property in $properties)
+			<HBox class="sapUiTinyMarginBottom">
+				<Label class="detailsLabel" text="${property.name}:" />
+				<Text text="{details>/${property.name}}" />
+			</HBox>
+#end
+		</VBox>
+	</ResponsivePopover>
+</mvc:View> 

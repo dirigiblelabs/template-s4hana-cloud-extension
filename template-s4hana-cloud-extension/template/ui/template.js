@@ -38,6 +38,11 @@ function getUi(parameters) {
 		engine: "velocity",
 		collection: "models"
 	}, {
+		location: "/template-s4hana-cloud-extension/ui/controller/Details.controller.js.template", 
+		rename: "ui/controller/Details.controller.js",
+		action: "generate",
+		engine: "velocity"
+	}, {
 		location: "/template-s4hana-cloud-extension/ui/css/style.css.template", 
 		rename: "ui/css/style.css",
 		action: "generate",
@@ -56,6 +61,12 @@ function getUi(parameters) {
 	}, {
 		location: "/template-s4hana-cloud-extension/ui/view/App.view.xml.template", 
 		rename: "ui/view/App.view.xml",
+		action: "generate",
+		engine: "velocity",
+		collection: "models"
+	}, {
+		location: "/template-s4hana-cloud-extension/ui/view/Details.view.xml.template", 
+		rename: "ui/view/Details.view.xml",
 		action: "generate",
 		engine: "velocity",
 		collection: "models"
