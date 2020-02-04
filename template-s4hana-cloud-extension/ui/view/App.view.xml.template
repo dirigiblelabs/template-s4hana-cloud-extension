@@ -21,7 +21,7 @@
 					<columns>
 #foreach ($property in $properties)
 #if($property.widgetIsMajor)
-						<Column />
+						<Column><Text text="$property.name"></Text></Column>
 #end
 #end
 					</columns>
