@@ -2,8 +2,10 @@
 	<Dialog id="CreateDialog" title="Create ${name}" verticalScrolling="true">
 		<content>
 #foreach ($property in $properties)
+#if($property.widgetIsMajor)
 			<Label text="${property.name}" labelFor="${property.name}Input"/>
 			<Input id="${property.name}Input" type="Text" placeholder="Enter ${property.name}"></Input>
+#end
 #end
 		</content>
 		<beginButton>

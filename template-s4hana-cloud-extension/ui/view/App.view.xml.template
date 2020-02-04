@@ -19,16 +19,21 @@
 						<mvc:XMLView id="detailsView" viewName="${projectName}.view.Details" />
 					</dependents>
 					<columns>
+#foreach ($property in $properties)
+#if($property.widgetIsMajor)
 						<Column />
-						<Column hAlign="Right" />
+#end
+#end
 					</columns>
 					<items>
 						<ColumnListItem type="Active" press="showDetails">
-							<cells>
 #foreach ($property in $properties)
+#if($property.widgetIsMajor)
+							<cells>
 								<Text class="myFontSize" text="{${dataName}>${property.widgetService}}" />
-#end
 							</cells>
+#end
+#end
 						</ColumnListItem>
 					</items>
 				</Table>
